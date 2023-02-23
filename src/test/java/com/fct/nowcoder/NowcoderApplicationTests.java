@@ -6,11 +6,16 @@ import com.fct.nowcoder.entity.DiscussPost;
 import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.DiscussPostService;
 import com.fct.nowcoder.service.UserService;
+import com.fct.nowcoder.util.MailClient;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.StringEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -29,6 +34,16 @@ class NowcoderApplicationTests {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StringEncryptor stringEncryptor;
+
+
+    @Autowired
+    private MailClient mailClient;
+
+    @Resource
+    private TemplateEngine templateEngine;
 
     //测试帖子查询
     @Test
@@ -60,6 +75,37 @@ class NowcoderApplicationTests {
 
         User user = userService.selectById(101);
         log.info("user:{}",user);
+    }
+
+    @Test
+    void testjiami(){
+        //将密码加密
+        String s = stringEncryptor.encrypt("dfvb");
+        log.info("{}",s);
+
+        //将密码解密
+        String pass = stringEncryptor.decrypt(s);
+        log.info("{}",pass);
+    }
+
+    //测试邮箱
+    @Test
+    void testMailClient(){
+        mailClient.sendMessage("jia869928@gmail.com","Test","Welcom!!!");
+    }
+
+    //测试发送HTML邮件
+    @Test
+    void testHtmlMail(){
+        //设置html的内容
+        Context context = new Context();
+        context.setVariable("username","niubei");
+        String content = templateEngine.process("/mail/demo", context);
+        System.out.println(content);
+
+        //将内容content写入发送邮件方法中
+        mailClient.sendMessage("jia869928@gmail.com","Test", content);
+
     }
 
 }

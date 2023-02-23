@@ -17,9 +17,31 @@ spring:
       password: 123456
   thymeleaf:
     cache: false
+# MailProperties
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: 1478598523@qq.com
+    password: ENC(2yUpT6aMWiHSOLbcPGr3k/0XXZ90lHmFx4G3Hren2RCBAkYyIR3rfKi/Jq1r+5kjndB6tkKPdOddWzjV+NFXyw==)
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+
+
+
 
 mybatis:
   #设置type搜索包的路径
   type-aliases-package: com.fct.nowcoder.entity
   #设置mapper的扫描
   mapper-locations: classpath:mapper/*.xml
+
+#jasypt加密
+jasypt:
+  encryptor:
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+    password: miyao...
+
