@@ -6,10 +6,27 @@
         <result column="header_url" property="headerUrl"/>
         <result column="create_time" property="createTime"/>
     </resultMap>
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user(username,password,salt,email,type,status,activation_code,header_url,create_time)
+        VALUES (#{username},#{password},#{salt},#{email},#{type},#{status},#{activationCode},#{headerUrl},#{createTime});
+    </insert>
 
     <select id="selectById" resultMap="userType">
         SELECT *
         FROM user
         WHERE id = #{id};
+    </select>
+
+    <select id="selectByUsernameUser" resultMap="userType">
+        SELECT *
+        FROM user
+        WHERE username = #{username};
+    </select>
+
+
+    <select id="selectByEmailUser" resultMap="userType">
+        SELECT *
+        FROM user
+        WHERE email = #{email};
     </select>
 </mapper>

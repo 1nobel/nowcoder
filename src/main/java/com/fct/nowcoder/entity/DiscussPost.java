@@ -11,8 +11,12 @@ public class DiscussPost implements Serializable {
     private String userId;
     private String title;
     private String content;
+
+    //置顶
     private Integer type;
+    //精华
     private Integer status;
+
     private Date createTime;
     private Integer commentCount;
     private Double score;

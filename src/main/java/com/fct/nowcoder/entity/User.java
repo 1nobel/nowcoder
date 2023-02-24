@@ -1,6 +1,7 @@
 package com.fct.nowcoder.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -8,7 +9,9 @@ import java.util.Date;
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     private Integer id;
+    //@NotBlank(message = "用户名不能为空")
     private String username;
+    //@NotBlank(message = "密码不能为空")
     private String password;
     private String salt;
     private String email;
@@ -16,7 +19,7 @@ public class User implements Serializable {
     private Integer status;
     private String activationCode;
     private String headerUrl;
-    private Date createTime;
+    private LocalDateTime createTime;
 
     public Integer getId() {
         return id;
@@ -90,11 +93,11 @@ public class User implements Serializable {
         this.headerUrl = headerUrl;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
