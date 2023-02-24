@@ -22,7 +22,7 @@ spring:
     host: smtp.qq.com
     port: 465
     username: 1478598523@qq.com
-    password: ENC(2yUpT6aMWiHSOLbcPGr3k/0XXZ90lHmFx4G3Hren2RCBAkYyIR3rfKi/Jq1r+5kjndB6tkKPdOddWzjV+NFXyw==)
+    password: ENC(vnSna49/jRqOXK58Hno0EPGDsV3hUAN7XbXqY9nF0D1Uit8ZIMlziZ06WRipRNc6hbMdX1apJospktQS9xOLog==)
     protocol: smtps
     properties:
       mail:
@@ -43,5 +43,5 @@ mybatis:
 jasypt:
   encryptor:
     algorithm: PBEWITHHMACSHA512ANDAES_256
-    password: miyao...
+    password: gsdagh
 

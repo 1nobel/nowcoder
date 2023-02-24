@@ -80,7 +80,7 @@ class NowcoderApplicationTests {
     @Test
     void testjiami(){
         //将密码加密
-        String s = stringEncryptor.encrypt("dfvb");
+        String s = stringEncryptor.encrypt("hjk");
         log.info("{}",s);
 
         //将密码解密

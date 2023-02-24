@@ -12,7 +12,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 /**
- * 邮件类，用于发邮件
+ * 邮件类，用于发邮件,定义发邮件方法
  */
 @Slf4j
 @Component
