@@ -15,4 +15,6 @@ public interface UserService {
     Boolean insertUser(User user);
 
     Map<String,Object> register(User user);
+
+    Integer activation(Integer userId, String code);
 }

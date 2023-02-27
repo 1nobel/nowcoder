@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+
+import static com.fct.nowcoder.util.CommunityConstant.ACTIVATION_REPEAT;
+import static com.fct.nowcoder.util.CommunityConstant.ACTIVATION_SUCCESS;
 
 @Controller
 public class LoginController {
@@ -23,9 +26,9 @@ public class LoginController {
         return "/site/register";
     }
 
-    @GetMapping("/abc")
-    public void das( @Validated User user){
-
+    @GetMapping("/login")
+    public String getLoginPage(){
+        return "/site/login";
     }
 
     @PostMapping("/register")
@@ -45,4 +48,24 @@ public class LoginController {
             return "/site/register";
         }
     }
+
+    @GetMapping("/activation/{userId}/{code}")
+    public String activation(Model model, @PathVariable("userId") Integer userId, @PathVariable("code") String code){
+        Integer activation = userService.activation(userId, code);
+
+        if (activation == ACTIVATION_SUCCESS){
+            model.addAttribute("rightMsg","激活成功,您的账号可以正常使用了!");
+            model.addAttribute("target","/login");
+        }else if(activation == ACTIVATION_REPEAT){
+            model.addAttribute("rightMsg","无效操作,该账号已经激活过了");
+            model.addAttribute("target","/index");
+        }else{
+            model.addAttribute("rightMsg","激活失败,您提供的激活码不正确");
+            model.addAttribute("target","/index");
+        }
+
+        return "/site/operate-result";
+    }
+
+
 }

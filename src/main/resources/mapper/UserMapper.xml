@@ -10,6 +10,39 @@
         INSERT INTO user(username,password,salt,email,type,status,activation_code,header_url,create_time)
         VALUES (#{username},#{password},#{salt},#{email},#{type},#{status},#{activationCode},#{headerUrl},#{createTime});
     </insert>
+    <update id="updateById">
+        UPDATE  user
+        <set>
+            <if test="username != null and username !=''">
+                username = #{username},
+            </if>
+            <if test="password != null and password !=''">
+                password = #{password},
+            </if>
+            <if test="salt != null and salt !=''">
+                salt = #{salt},
+            </if>
+            <if test="email != null and email !=''">
+                email = #{email},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="activationCode != null and activationCode !=''">
+                activation_code = #{activationCode},
+            </if>
+            <if test="headerUrl != null and headerUrl != ''">
+                header_url = #{headerUrl},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime}
+            </if>
+        </set>
+        WHERE id = #{id};
+    </update>
 
     <select id="selectById" resultMap="userType">
         SELECT *

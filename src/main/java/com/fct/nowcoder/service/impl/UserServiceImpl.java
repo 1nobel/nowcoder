@@ -16,10 +16,11 @@ import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import static com.fct.nowcoder.util.CommunityConstant.*;
 
 
 @Transactional
@@ -44,6 +45,7 @@ public class UserServiceImpl implements UserService {
     //4. 从配置文件中引入项目名
     @Value("${server.servlet.context-path}")
     private String proName;
+
 
     @Override
     public User selectById(Integer userId) {
@@ -139,4 +141,33 @@ public class UserServiceImpl implements UserService {
         return map;
 
     }
+
+    /**
+     * 处理激活方法
+     * @Param userId
+     * @Param code
+     * @Return Integer
+     * 三种激活状态:
+     *      1. 重复激活status=1
+     *      2. 成功 激活码和传入的一致,修改status
+     *      3. 失败
+     */
+    public Integer activation(Integer userId, String code){
+        User user = userMapper.selectById(userId);
+
+        // 重复激活
+        if(user.getStatus() == 1){
+            return ACTIVATION_REPEAT;
+        }
+
+        // 激活成功
+        if(user.getActivationCode().equals(code)){
+            user.setStatus(1);
+            userMapper.updateById(user);
+            return ACTIVATION_SUCCESS;
+        }
+        // 激活失败
+        return ACTIVATION_FAILURE;
+    }
+
 }

@@ -12,4 +12,6 @@ public interface UserMapper {
     User selectByEmailUser(String email);
 
     Boolean insertUser(User user);
+
+    Boolean updateById(User user);
 }
