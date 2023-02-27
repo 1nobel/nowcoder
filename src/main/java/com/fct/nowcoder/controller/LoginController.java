@@ -3,14 +3,20 @@ package com.fct.nowcoder.controller;
 
 import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.UserService;
+import com.google.code.kaptcha.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 
 import static com.fct.nowcoder.util.CommunityConstant.ACTIVATION_REPEAT;
@@ -20,6 +26,9 @@ import static com.fct.nowcoder.util.CommunityConstant.ACTIVATION_SUCCESS;
 public class LoginController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private Producer kaptchaProducer;
 
     @GetMapping("/register")
     public String getRegisterPage(){
@@ -67,5 +76,22 @@ public class LoginController {
         return "/site/operate-result";
     }
 
+    @GetMapping("/kaptcha")
+    public void getKaptcha(HttpServletResponse response, HttpSession session){
+        // 生成验证码
+        String text = kaptchaProducer.createText();
+        BufferedImage image = kaptchaProducer.createImage(text);
 
+        //将验证码存入session
+        session.setAttribute("kaptcha",text);
+
+        //将图片输出给浏览器
+        response.setContentType("image/png");
+        try {
+            OutputStream os = response.getOutputStream();
+            ImageIO.write(image,"png",os );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
