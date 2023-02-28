@@ -19,4 +19,15 @@ public interface CommunityConstant {
      * 激活失败
      */
     Integer ACTIVATION_FAILURE = 2;
+
+    /**
+     *  默认状态的登录凭证的超时时间
+     */
+    Long DEFAULT_EXPIRED_MINUTES = 60 * 12L;
+
+    /**
+     * 记住状态的登录凭证超时时间
+     */
+    Long REMEMBER_EXPIRED_MINUTES = 60 * 24 * 30L;
+
 }

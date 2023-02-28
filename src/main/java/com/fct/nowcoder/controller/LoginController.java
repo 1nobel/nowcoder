@@ -4,7 +4,10 @@ package com.fct.nowcoder.controller;
 import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.UserService;
 import com.google.code.kaptcha.Producer;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -19,9 +22,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import static com.fct.nowcoder.util.CommunityConstant.ACTIVATION_REPEAT;
-import static com.fct.nowcoder.util.CommunityConstant.ACTIVATION_SUCCESS;
+import static com.fct.nowcoder.util.CommunityConstant.*;
 
+@Slf4j
 @Controller
 public class LoginController {
     @Autowired
@@ -29,6 +32,9 @@ public class LoginController {
 
     @Autowired
     private Producer kaptchaProducer;
+
+    @Value("${server.servlet.context-path}")
+    private String proName;
 
     @GetMapping("/register")
     public String getRegisterPage(){
@@ -93,5 +99,90 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //登录功能表现层
+    @PostMapping("/login")
+    public String login(Model model, String username, String password, String code, boolean rememberme,
+                                    HttpSession session, HttpServletResponse response){
+        model.addAttribute("username",username);
+        model.addAttribute("password",password);
+
+        //1. 验证验证码
+        String kaptcha = (String)session.getAttribute("kaptcha");
+        if(StringUtils.isBlank(kaptcha)|| StringUtils.isBlank(code)|| !kaptcha.equalsIgnoreCase(code)){
+            model.addAttribute("codeMsg","验证码不正确!");
+            return "/site/login";
+        }
+
+        //2.检查账号,密码
+        log.info("{}",rememberme);
+        Long expiredMinutes = rememberme ? REMEMBER_EXPIRED_MINUTES: DEFAULT_EXPIRED_MINUTES;
+
+
+        Map<String, String> map = userService.login(username, password, expiredMinutes);
+        //2.1 map里存放着登录验证数据就将其存入Cookie并重定向到首页
+        if(map.containsKey("ticket")){
+            Cookie cookie = new Cookie("ticket",map.get("ticket"));
+            cookie.setPath("proName");
+            cookie.setMaxAge(expiredMinutes.intValue());
+            response.addCookie(cookie);
+            return "redirect:/index";
+        }
+
+        //2.2 map里存放着错误信息就将其放入model
+        model.addAttribute("usernameMsg",map.get("usernameMsg"));
+        model.addAttribute("passwordMsg",map.get("passwordMsg"));
+        return "/site/login";
+    }
+
+    /**
+     * 退出登录
+     */
+    @GetMapping("/logout")
+    public String logout(@CookieValue("ticket") String ticket){
+        userService.logout(ticket);
+        return "redirect:/login";
+    }
+
+    @GetMapping("/forget")
+    public String forget(){
+        return "/site/forget";
+    }
+
+
+    /**
+     * 忘记密码--发送邮件
+     * @param model
+     * @param yourEmail
+     * @param session
+     * @return
+     */
+    @GetMapping("/emailCode")
+    public String sendCode(Model model, String yourEmail,HttpSession session){
+        model.addAttribute("yourEmail",yourEmail);
+
+        Map<String, String> map = userService.sendCode(yourEmail,session);
+        if(StringUtils.isNotBlank(map.toString())) {
+            model.addAttribute("emailMsg", map.get("emailMsg"));
+        }
+        log.warn("验证码发送成功!");
+        return "/forget";
+
+    }
+
+    @PostMapping("/updatePwd")
+    public String updatePwd(String yourEmail, String code, String password,HttpSession httpSession,Model model){
+        model.addAttribute("yourEmail",yourEmail);
+
+        Map<String, String> map = userService.updatePassword(yourEmail, password, code, httpSession);
+        if(map != null || !map.isEmpty()){
+                model.addAttribute("emailMsg",map.get("emailMsg"));
+                model.addAttribute("codeMsg",map.get("codeMsg"));
+                model.addAttribute("passwordMsg",map.get("passwordMsg"));
+                return "/forget";
+        }
+
+        return "/login";
     }
 }

@@ -43,6 +43,16 @@
         </set>
         WHERE id = #{id};
     </update>
+    <update id="updateByEmail">
+        UPDATE  user
+        <set>
+
+            <if test="password != null and password !=''">
+                password = #{password}
+            </if>
+        </set>
+        WHERE email = #{email};
+    </update>
 
     <select id="selectById" resultMap="userType">
         SELECT *

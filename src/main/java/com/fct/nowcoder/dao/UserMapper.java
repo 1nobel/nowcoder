@@ -14,4 +14,6 @@ public interface UserMapper {
     Boolean insertUser(User user);
 
     Boolean updateById(User user);
+
+    Integer updateByEmail(String email,String password);
 }

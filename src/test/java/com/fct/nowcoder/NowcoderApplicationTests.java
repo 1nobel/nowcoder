@@ -1,8 +1,10 @@
 package com.fct.nowcoder;
 
 import com.fct.nowcoder.dao.DiscussPostMapper;
+import com.fct.nowcoder.dao.LoginTicketMapper;
 import com.fct.nowcoder.dao.UserMapper;
 import com.fct.nowcoder.entity.DiscussPost;
+import com.fct.nowcoder.entity.LoginTicket;
 import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.DiscussPostService;
 import com.fct.nowcoder.service.UserService;
@@ -16,6 +18,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -44,6 +47,9 @@ class NowcoderApplicationTests {
 
     @Resource
     private TemplateEngine templateEngine;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     //测试帖子查询
     @Test
@@ -107,5 +113,36 @@ class NowcoderApplicationTests {
         mailClient.sendMessage("jia869928@gmail.com","Test", content);
 
     }
+
+    //测试LoginTicket
+    @Test
+    void testLoginTicket(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(15);
+        loginTicket.setTicket("qqq");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(LocalDateTime.now().plusMinutes(10) );
+//
+//        Integer flag = loginTicketMapper.insertLoginTicket(loginTicket);
+//        log.warn("{}",flag);
+//
+//        LoginTicket ticket = loginTicketMapper.selectTicket("qqq");
+//        log.error("{}",ticket);
+
+        Boolean aBoolean = loginTicketMapper.updateTicket("qaqq", 1);
+        log.error("{}",aBoolean);
+    }
+
+    //根据邮箱修改密码
+//    @Test
+//    void updatePwd(){
+//        userService.updatePassword("jia869928@gmail.com","123456","");
+//    }
+
+    //发送邮箱验证码
+//    @Test
+//    void testSendCode(){
+//        userService.sendCode("jia869928@gmail.com");
+//    }
 
 }
