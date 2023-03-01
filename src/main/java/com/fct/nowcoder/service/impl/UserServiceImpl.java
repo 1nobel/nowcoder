@@ -268,6 +268,12 @@ public class UserServiceImpl implements UserService {
         return map;
     }
 
+    @Override
+    public LoginTicket selectTicket(String ticket) {
+        return loginTicketMapper.selectTicket(ticket);
+
+    }
+
     /**
      * 重置密码业务
      * @param yourEmail 邮箱

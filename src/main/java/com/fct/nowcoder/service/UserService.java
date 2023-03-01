@@ -1,5 +1,6 @@
 package com.fct.nowcoder.service;
 
+import com.fct.nowcoder.entity.LoginTicket;
 import com.fct.nowcoder.entity.User;
 
 import javax.servlet.http.HttpSession;
@@ -26,4 +27,6 @@ public interface UserService {
     Map<String,String> updatePassword(String yourEmail, String password, String code, HttpSession httpSession);
 
     Map<String,String> sendCode(String yourEmail,HttpSession session);
+
+    LoginTicket selectTicket(String ticket);
 }
