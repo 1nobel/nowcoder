@@ -20,13 +20,13 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(alphaInterceptor)
-                .excludePathPatterns("/**/*.css"
-                                     ,"/**/*.js"
-                                     ,"/**/*.png"
-                                     ,"/**/*.jpg"
-                                     ,"/**/*.jpeg")
-                .addPathPatterns("/register","/login");
+//        registry.addInterceptor(alphaInterceptor)
+//                .excludePathPatterns("/**/*.css"
+//                                     ,"/**/*.js"
+//                                     ,"/**/*.png"
+//                                     ,"/**/*.jpg"
+//                                     ,"/**/*.jpeg")
+//                .addPathPatterns("/register","/login");
 
         registry.addInterceptor(loginTicketInterceptor)
                 .excludePathPatterns("/**/*.css"

@@ -29,4 +29,8 @@ public interface UserService {
     Map<String,String> sendCode(String yourEmail,HttpSession session);
 
     LoginTicket selectTicket(String ticket);
+
+    boolean updateById(User user);
+
+    Map<String,String> updatePassword(String newPassword,User user,String oldPassword,String confirmPassword);
 }

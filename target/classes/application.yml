@@ -48,4 +48,4 @@ jasypt:
 #配置域名，当用户注册时可链接到网站
 nowcoder:
   path: http://localhost:8010
-
+  upload: D:\\project/javaProject/images

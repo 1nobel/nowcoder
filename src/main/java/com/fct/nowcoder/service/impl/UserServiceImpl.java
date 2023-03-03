@@ -274,6 +274,11 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public boolean updateById(User user) {
+        return userMapper.updateById(user);
+    }
+
     /**
      * 重置密码业务
      * @param yourEmail 邮箱
@@ -300,6 +305,41 @@ public class UserServiceImpl implements UserService {
         NowcoderUtil nowcoderUtil = new NowcoderUtil();
         password =  nowcoderUtil.md5(password + user.getSalt());
         userMapper.updateByEmail(yourEmail,password);
+
+        return map;
+    }
+
+    /**
+     * 修改密码
+     */
+    public Map<String,String> updatePassword(String newPassword,User user,String oldPassword,String confirmPassword){
+        Map<String,String> map = new HashMap<>();
+        if(StringUtils.isBlank(user.getEmail())){
+            map.put("oldPasswordMsg","请检查您的登陆状态");
+        }
+
+        //将前端传入的密码进行加密
+        NowcoderUtil nowcoderUtil = new NowcoderUtil();
+        oldPassword =  nowcoderUtil.md5(oldPassword + user.getSalt());
+        //查询旧密码
+        user = userMapper.selectByEmailUser(user.getEmail());
+        if(!oldPassword.equals(user.getPassword())){
+            map.put("oldPasswordMsg","密码错误");
+            return map;
+        }
+
+        if(newPassword.length() < 8){
+            map.put("newPasswordMsg","您的新密码位数必须大于8位");
+            return map;
+        }
+
+        if(!newPassword.equals(confirmPassword)){
+            map.put("confirmPasswordMsg","两次输入的密码不一致");
+            return map;
+        }
+
+        newPassword =  nowcoderUtil.md5(newPassword + user.getSalt());
+        userMapper.updateByEmail(user.getEmail(),newPassword);
 
         return map;
     }

@@ -171,6 +171,15 @@ public class LoginController {
 
     }
 
+    /**
+     * 修改密码
+     * @param yourEmail
+     * @param code
+     * @param password
+     * @param httpSession
+     * @param model
+     * @return
+     */
     @PostMapping("/updatePwd")
     public String updatePwd(String yourEmail, String code, String password,HttpSession httpSession,Model model){
         model.addAttribute("yourEmail",yourEmail);
