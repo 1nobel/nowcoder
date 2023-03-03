@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 //注解作用在什么上面
 @Target(ElementType.METHOD)
+//注解的运行时效
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LoginRequired {
 

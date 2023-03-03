@@ -1,6 +1,7 @@
 package com.fct.nowcoder.controller;
 
 
+import com.fct.nowcoder.annotation.LoginRequired;
 import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.HostHolder;
@@ -39,12 +40,14 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @LoginRequired
     @GetMapping("/setting")
     public String getSetting(){
         return "/site/setting";
     }
 
     //图片上传
+    @LoginRequired
     @PostMapping("/upload")
     public String uploadHeader(MultipartFile headerImage, Model model){
         if(headerImage == null){
@@ -109,6 +112,7 @@ public class UserController {
     }
 
     //修改密码
+    @LoginRequired
     @PostMapping("/update")
     public String updatePwd(String newPassword,String oldPassword,String confirmPassword, Model model){
         User user = HostHolder.getUser();

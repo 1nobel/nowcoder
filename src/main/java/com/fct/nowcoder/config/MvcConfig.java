@@ -2,6 +2,7 @@ package com.fct.nowcoder.config;
 
 
 import com.fct.nowcoder.controller.interceptor.AlphaInterceptor;
+import com.fct.nowcoder.controller.interceptor.LoginRequiredInterceptor;
 import com.fct.nowcoder.controller.interceptor.LoginTicketInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -17,6 +18,9 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Resource
     private LoginTicketInterceptor loginTicketInterceptor;
+
+    @Resource
+    private LoginRequiredInterceptor loginRequiredInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -34,6 +38,8 @@ public class MvcConfig implements WebMvcConfigurer {
                         ,"/**/*.png"
                         ,"/**/*.jpg"
                         ,"/**/*.jpeg");
+
+        registry.addInterceptor(loginRequiredInterceptor);
 
     }
 }
