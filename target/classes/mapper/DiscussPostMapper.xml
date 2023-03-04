@@ -33,6 +33,12 @@
             and user_id = #{userId};
         </if>
     </select>
-<!--    -->
+    <select id="getDiscussPost" resultMap="discussType">
+        SELECT *
+        FROM discuss_post
+        WHERE id = #{id};
+
+    </select>
+    <!--    -->
 
 </mapper>

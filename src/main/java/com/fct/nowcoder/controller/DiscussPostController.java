@@ -4,12 +4,12 @@ package com.fct.nowcoder.controller;
 import com.fct.nowcoder.entity.DiscussPost;
 import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.DiscussPostService;
+import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.HostHolder;
 import com.fct.nowcoder.util.NowcoderUtil;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -21,6 +21,9 @@ public class DiscussPostController {
 
     @Resource
     private DiscussPostService discussPostService;
+
+    @Resource
+    private UserService userService;
 
     @PostMapping("/add")
     @ResponseBody
@@ -39,5 +42,14 @@ public class DiscussPostController {
 
         //报错未来统一处理
         return NowcoderUtil.getJsonString(0,"发布帖子成功!!");
+    }
+
+    @GetMapping("/get/{discussPostId}")
+    public String getDetail(@PathVariable("discussPostId") Integer discussPostId, Model model){
+        DiscussPost discussPost = discussPostService.getDiscussPost(discussPostId);
+        User user = userService.selectById(Integer.parseInt(discussPost.getUserId()));
+        model.addAttribute("post",discussPost);
+        model.addAttribute("user",user);
+        return "/site/discuss-detail";
     }
 }
