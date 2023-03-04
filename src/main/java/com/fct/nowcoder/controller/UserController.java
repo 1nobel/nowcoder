@@ -6,7 +6,6 @@ import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.HostHolder;
 import com.fct.nowcoder.util.NowcoderUtil;
-import com.sun.deploy.net.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;

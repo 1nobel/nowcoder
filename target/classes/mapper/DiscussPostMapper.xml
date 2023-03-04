@@ -4,6 +4,10 @@
     <sql id="selectFields">
         id,user_id,title,content,type,status,create_time,comment_count,score
     </sql>
+    <insert id="insertDiscussPost" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO discuss_post(user_id,title,content,create_time)
+        VALUES (#{userId},#{title},#{content},#{createTime});
+    </insert>
 
     <resultMap id="discussType" type="discussPost">
         <result column="user_id" property="userId"/>

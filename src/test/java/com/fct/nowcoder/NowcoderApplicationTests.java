@@ -9,11 +9,13 @@ import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.DiscussPostService;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.MailClient;
+import com.fct.nowcoder.util.SensitiveFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -50,6 +52,9 @@ class NowcoderApplicationTests {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Resource
+    private SensitiveFilter sensitiveFilter;
 
     //测试帖子查询
     @Test
@@ -145,4 +150,10 @@ class NowcoderApplicationTests {
 //        userService.sendCode("jia869928@gmail.com");
 //    }
 
+    @Test
+    public void testSensitiveFilter() {
+        String text = "傻逼,二货,大撒旦发生v赌博,转***卖";
+        String filter  = sensitiveFilter.filter(text);
+        log.warn(filter);
+    }
 }

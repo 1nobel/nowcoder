@@ -17,5 +17,6 @@ public interface DiscussPostMapper {
     //当只有一个参数且要在<if>中使用，必须要使用@Param注解取别名
     Integer selectCountDiscussPost(@Param("userId")Integer userId);
 
-
+    //增加帖子
+    int insertDiscussPost(DiscussPost discussPost);
 }

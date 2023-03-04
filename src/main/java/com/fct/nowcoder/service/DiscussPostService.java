@@ -7,4 +7,6 @@ import java.util.List;
 public interface DiscussPostService {
     List<DiscussPost> selectDiscussPost(Integer userId, Integer offset, Integer limit);
     Integer selectCountDiscussPost(Integer userId);
+    Integer addDiscussPost(DiscussPost discussPost);
+
 }

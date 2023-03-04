@@ -6,17 +6,22 @@ import com.fct.nowcoder.entity.Page;
 import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.DiscussPostService;
 import com.fct.nowcoder.service.UserService;
+import com.fct.nowcoder.util.NowcoderUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 public class HomeController {
 
@@ -52,5 +57,12 @@ public class HomeController {
         return "/index";
     }
 
+    @PostMapping("/ajax")
+    @ResponseBody
+    public String testAjax(String name, String password){
+        log.info(name);
+        log.info(password);
+        return NowcoderUtil.getJsonString(0,"操作成功");
+    }
 
 }
