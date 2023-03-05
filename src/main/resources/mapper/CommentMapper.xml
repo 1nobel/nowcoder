@@ -8,6 +8,10 @@
         <result column="target_id" property="targetId"/>
         <result column="create_time" property="createTime"/>
     </resultMap>
+    <insert id="insertComment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment(user_id, entity_type, entity_id, target_id, content, status, create_time)
+        VALUES (#{userId}, #{entityType}, #{entityId}, #{targetId}, #{content}, #{status}, #{createTime});
+    </insert>
 
     <select id="selectCommentsByEntity" resultMap="CommentType">
         SELECT *

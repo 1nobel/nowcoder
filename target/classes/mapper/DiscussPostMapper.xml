@@ -8,6 +8,11 @@
         INSERT INTO discuss_post(user_id,title,content,create_time)
         VALUES (#{userId},#{title},#{content},#{createTime});
     </insert>
+    <update id="updatePostCommentCount">
+        UPDATE discuss_post
+        SET comment_count = #{commentCount}
+        WHERE id = #{id};
+    </update>
 
     <resultMap id="discussType" type="discussPost">
         <result column="user_id" property="userId"/>

@@ -108,7 +108,7 @@ public class DiscussPostController {
                         // 回复作者
                         replyVo.put("user",userService.selectById(reply.getUserId()));
                         // 回复目标
-                        User target = reply.getTargetId() == 0 ? null : userService.selectById(reply.getTargetId());
+                        User target = (reply.getTargetId() == null|| reply.getTargetId() == 0)? null : userService.selectById(reply.getTargetId());
                         replyVo.put("target", target);
 
                         replyVOList.add(replyVo);

@@ -9,5 +9,5 @@ public interface DiscussPostService {
     Integer selectCountDiscussPost(Integer userId);
     Integer addDiscussPost(DiscussPost discussPost);
     DiscussPost getDiscussPost(Integer id);
-
+    Integer updateCommentCount(Integer id, Integer commentCount);
 }

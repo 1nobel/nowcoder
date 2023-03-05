@@ -11,4 +11,7 @@ public interface CommentMapper {
 
     Integer selectCountByEntity(int entityType, int entityId);
 
+    //添加评论
+    Integer insertComment(Comment comment);
+
 }
