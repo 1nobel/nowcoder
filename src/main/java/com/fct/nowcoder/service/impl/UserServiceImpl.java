@@ -250,7 +250,7 @@ public class UserServiceImpl implements UserService {
 
         //1.判断邮箱是否已注册,未注册返回错误信息
         User user = userMapper.selectByEmailUser(yourEmail);
-        if(StringUtils.isBlank(user.toString())){
+        if(user == null){
             map.put("emailMsg","该邮箱未注册,请先进行注册!");
             return map;
         }
@@ -291,17 +291,23 @@ public class UserServiceImpl implements UserService {
         Map<String,String> map = new HashMap<>();
         if(StringUtils.isBlank(yourEmail)){
             map.put("emailMsg","请输入邮箱");
+            return map;
         }
 
         if(!code.equals(httpSession.getAttribute("code_"+yourEmail)) || code == null || httpSession.getAttribute("code_"+yourEmail) == null ){
             map.put("codeMsg","请检查邮箱和验证码");
+            return map;
         }
 
         if(password.length() < 8){
             map.put("passwordMsg","您的新密码位数必须大于8位");
+            return map;
         }
         User user = userMapper.selectByEmailUser(yourEmail);
-
+        if(user == null){
+            map.put("emailMsg","该邮箱未注册!");
+            return map;
+        }
         NowcoderUtil nowcoderUtil = new NowcoderUtil();
         password =  nowcoderUtil.md5(password + user.getSalt());
         userMapper.updateByEmail(yourEmail,password);

@@ -30,4 +30,13 @@ public interface CommunityConstant {
      */
     Long REMEMBER_EXPIRED_MINUTES = 60 * 24 * 30L;
 
+    /**
+     * 实体类型:帖子
+     */
+    Integer ENTITY_TYPE_POST = 1;
+
+    /**
+     * 实体类型:评论
+     */
+    Integer ENTITY_TYPE_COMMENT = 2;
 }

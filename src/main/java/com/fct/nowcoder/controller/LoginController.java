@@ -158,16 +158,17 @@ public class LoginController {
      * @param session
      * @return
      */
-    @GetMapping("/emailCode")
+    @PostMapping("/emailCode")
     public String sendCode(Model model, String yourEmail,HttpSession session){
         model.addAttribute("yourEmail",yourEmail);
 
         Map<String, String> map = userService.sendCode(yourEmail,session);
-        if(StringUtils.isNotBlank(map.toString())) {
-            model.addAttribute("emailMsg", map.get("emailMsg"));
+        if(!map.isEmpty()) {
+            model.addAttribute("email", map.get("emailMsg"));
+            return "/site/forget";
         }
         log.warn("验证码发送成功!");
-        return "/forget";
+        return "redirect:/forget";
 
     }
 
@@ -185,13 +186,13 @@ public class LoginController {
         model.addAttribute("yourEmail",yourEmail);
 
         Map<String, String> map = userService.updatePassword(yourEmail, password, code, httpSession);
-        if(map != null || !map.isEmpty()){
-                model.addAttribute("emailMsg",map.get("emailMsg"));
+        if(!map.isEmpty()){
+                model.addAttribute("email",map.get("emailMsg"));
                 model.addAttribute("codeMsg",map.get("codeMsg"));
                 model.addAttribute("passwordMsg",map.get("passwordMsg"));
-                return "/forget";
+                return "/site/forget";
         }
 
-        return "/login";
+        return "redirect:/login";
     }
 }
