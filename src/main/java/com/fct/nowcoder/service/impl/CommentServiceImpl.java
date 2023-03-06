@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
 
         // 2. 敏感词过滤
         comment.setContent(HtmlUtils.htmlEscape(comment.getContent()));
-        comment.setContent(comment.getContent());
+        comment.setContent(sensitiveFilter.filter(comment.getContent()));
 
 
         Integer row = commentMapper.insertComment(comment);

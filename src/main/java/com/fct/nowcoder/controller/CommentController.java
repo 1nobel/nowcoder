@@ -24,7 +24,7 @@ public class CommentController {
         comment.setUserId(HostHolder.getUser().getId());
         comment.setStatus(0);
         comment.setCreateTime(new Date());
-
+//        comment.setTargetId(discussPostId);
         commentService.addCommentAndUpdateCommentCount(comment);
 
         return "redirect:/discussPost/get/" +discussPostId;
