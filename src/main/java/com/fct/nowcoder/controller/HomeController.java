@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,6 +60,11 @@ public class HomeController {
         log.info(name);
         log.info(password);
         return NowcoderUtil.getJsonString(0,"操作成功");
+    }
+
+    @GetMapping("/error")
+    public String errorPage(){
+        return "/error/500";
     }
 
 }

@@ -40,6 +40,8 @@ public class MessageController {
     @GetMapping("/letter/list")
     public String getLetterList(Model model, Page page){
 
+
+
         //1. 获取用户信息
         User user = HostHolder.getUser();
 
@@ -163,7 +165,7 @@ public class MessageController {
         if(user == null){
             return NowcoderUtil.getJsonString(1, "您输入的用户不存在");
         }
-
+//        Integer.valueOf("as");
         // 获取当前用户
         User fromUser = HostHolder.getUser();
 
