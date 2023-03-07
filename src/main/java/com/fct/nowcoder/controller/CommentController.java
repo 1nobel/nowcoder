@@ -18,6 +18,7 @@ public class CommentController {
     @Resource
     private CommentService commentService;
 
+    //发评论
     @PostMapping("/add/{discussPostId}")
     public String addComment(@PathVariable("discussPostId") Integer discussPostId, Comment comment){
         //补充comment
