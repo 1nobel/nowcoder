@@ -9,6 +9,20 @@
         <result column="create_time" property="createTime"/>
     </resultMap>
 
+    <insert id="addMessage" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO message(from_id, to_id, conversation_id, content, status, create_time)
+        VALUES (#{fromId}, #{toId}, #{conversationId}, #{content}, #{status}, #{createTime});
+    </insert>
+
+    <update id="updateMessageStatus">
+        UPDATE message
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
 
     <select id="selectConversation" resultMap="MessageType">
         SELECT * FROM message

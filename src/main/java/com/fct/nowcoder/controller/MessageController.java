@@ -6,16 +6,16 @@ import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.MessageService;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.HostHolder;
+import com.fct.nowcoder.util.NowcoderUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class MessageController {
@@ -119,6 +119,12 @@ public class MessageController {
         //3. 当前会话的发送对象
         model.addAttribute("target", this.getLetterTarget(conversationId));
 
+        //4. 修改未读消息数量
+        List<Integer> letterIds = getLetterIds(letterLetters);
+        if(!letterIds.isEmpty()){
+            messageService.updateStatusMessage(letterIds,1);
+        }
+
         return "/site/letter-detail";
     }
 
@@ -133,7 +139,51 @@ public class MessageController {
             return userService.selectById(id1);
         }
         return userService.selectById(id0);
+    }
 
+    // 获取当前会话未读消息的id
+    private List<Integer> getLetterIds(List<Message> letterList){
+        List<Integer> ids = new ArrayList<>();
+        User user = HostHolder.getUser();
+
+        if(!letterList.isEmpty()){
+            for(Message message : letterList){
+                if((Objects.equals(user.getId(), message.getToId())) && message.getStatus() == 0){
+                    ids.add(message.getId());
+                }
+            }
+        }
+        return ids;
+    }
+
+    @PostMapping("/letter/send")
+    @ResponseBody
+    public String senMessage(String toName, String content){
+        User user = userService.selectByUsernameUser(toName);
+        if(user == null){
+            return NowcoderUtil.getJsonString(1, "您输入的用户不存在");
+        }
+
+        // 获取当前用户
+        User fromUser = HostHolder.getUser();
+
+        // 设置私信信息
+        Message message = new Message();
+        message.setFromId(fromUser.getId());
+        message.setToId(user.getId());
+        message.setStatus(0);
+        message.setCreateTime(new Date());
+        message.setContent(content);
+
+        if(fromUser.getId() < user.getId()){
+            message.setConversationId(message.getFromId()+"_"+ message.getToId());
+        }else{
+            message.setConversationId(message.getToId()+"_"+ message.getFromId());
+        }
+
+        messageService.insertMessage(message);
+
+        return NowcoderUtil.getJsonString(0, "信息发送成功");
     }
 
 }

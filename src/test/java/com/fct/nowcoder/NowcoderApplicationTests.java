@@ -23,6 +23,7 @@ import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -192,4 +193,15 @@ class NowcoderApplicationTests {
         log.info("会话111_131中用户131未读的消息数量:{}",count2);
 
     }
+
+    @Test
+    public void testHaveSee(){
+        List<Integer> ids = new ArrayList<>();
+        ids.add(356);
+        ids.add(357);
+        ids.add(358);
+        Integer integer = messageMapper.updateMessageStatus(ids, 1);
+        log.info("{}",integer);
+    }
+
 }

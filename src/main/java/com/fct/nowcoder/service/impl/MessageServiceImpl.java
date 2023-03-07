@@ -3,7 +3,9 @@ package com.fct.nowcoder.service.impl;
 import com.fct.nowcoder.dao.MessageMapper;
 import com.fct.nowcoder.entity.Message;
 import com.fct.nowcoder.service.MessageService;
+import com.fct.nowcoder.util.SensitiveFilter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -13,6 +15,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Resource
     private MessageMapper messageMapper;
+
+    @Resource
+    private SensitiveFilter sensitiveFilter;
 
     @Override
     public List<Message> getConversation(int userId, int offset, int limit) {
@@ -37,5 +42,20 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Integer getLetterUnreadCount(Integer userId, String conversationId) {
         return messageMapper.selectLetterUnreadCount(userId, conversationId);
+    }
+
+    @Override
+    public Integer insertMessage(Message message) {
+
+        //敏感词过滤
+        message.setContent(HtmlUtils.htmlEscape(message.getContent()));
+        message.setContent(sensitiveFilter.filter(message.getContent()));
+
+        return messageMapper.addMessage(message);
+    }
+
+    @Override
+    public Integer updateStatusMessage(List<Integer> ids, Integer status) {
+        return messageMapper.updateMessageStatus(ids, status);
     }
 }
