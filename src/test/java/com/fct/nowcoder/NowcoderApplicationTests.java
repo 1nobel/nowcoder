@@ -2,9 +2,11 @@ package com.fct.nowcoder;
 
 import com.fct.nowcoder.dao.DiscussPostMapper;
 import com.fct.nowcoder.dao.LoginTicketMapper;
+import com.fct.nowcoder.dao.MessageMapper;
 import com.fct.nowcoder.dao.UserMapper;
 import com.fct.nowcoder.entity.DiscussPost;
 import com.fct.nowcoder.entity.LoginTicket;
+import com.fct.nowcoder.entity.Message;
 import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.DiscussPostService;
 import com.fct.nowcoder.service.UserService;
@@ -55,6 +57,9 @@ class NowcoderApplicationTests {
 
     @Resource
     private SensitiveFilter sensitiveFilter;
+
+    @Resource
+    private MessageMapper messageMapper;
 
     //测试帖子查询
     @Test
@@ -155,5 +160,36 @@ class NowcoderApplicationTests {
         String text = "傻逼,二货,大撒旦发生v赌博,转***卖";
         String filter  = sensitiveFilter.filter(text);
         log.warn(filter);
+    }
+
+    @Test
+    public void testMessage(){
+        // 查看会话列表
+        List<Message> messages = messageMapper.selectConversation(111, 0, 20);
+        int i = 1;
+        for(Message message: messages){
+
+            log.info("message"+(i++)+":{}",message);
+        }
+
+        // 查看当前用户的会话数量
+        Integer count = messageMapper.selectConversationCount(175);
+        log.info("111用户的会话数量为:{}",count);
+
+        // 查看某个会话的私信列表
+        List<Message> messages1 = messageMapper.selectLetterLetters("111_113", 0, 10);
+        int j = 1;
+        for(Message message : messages1){
+            log.info("会话111_113的私信列表"+(j++)+":{}",message);
+        }
+
+        // 查看某个会话包含的私信数量
+        Integer count1 = messageMapper.selectLetterCount("111_113");
+        log.info("会话111_113包含的私信数量:{}",count1);
+
+        // 查看某个会话未读私信数量
+        Integer count2 = messageMapper.selectLetterUnreadCount(131, "111_131");
+        log.info("会话111_131中用户131未读的消息数量:{}",count2);
+
     }
 }
