@@ -28,8 +28,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
 
         //1. 判断cookie为空则拦截
         if (cookies == null){
-            response.setStatus(401);
-            return false;
+            return true;
         }
 
         //2. 获取ticket
