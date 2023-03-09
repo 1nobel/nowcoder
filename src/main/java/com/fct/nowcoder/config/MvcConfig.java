@@ -38,7 +38,7 @@ public class MvcConfig implements WebMvcConfigurer {
                         ,"/**/*.png"
                         ,"/**/*.jpg"
                         ,"/**/*.jpeg"
-                        ,"/index");
+                        );
 
         registry.addInterceptor(loginRequiredInterceptor);
 

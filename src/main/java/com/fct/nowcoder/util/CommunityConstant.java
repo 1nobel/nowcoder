@@ -39,4 +39,9 @@ public interface CommunityConstant {
      * 实体类型:评论
      */
     Integer ENTITY_TYPE_COMMENT = 2;
+
+    /**
+     * 回复的赞
+     */
+    Integer ENTITY_TYPE_REPLY = 3;
 }

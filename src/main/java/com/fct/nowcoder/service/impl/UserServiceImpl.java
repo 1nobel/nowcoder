@@ -20,6 +20,7 @@ import org.thymeleaf.context.Context;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -132,7 +133,7 @@ public class UserServiceImpl implements UserService {
         user.setActivationCode(NowcoderUtil.generateUUID());
         String headerUrl = String.format("http://images.nowcoder.com/head/%dt.png",new Random().nextInt(1000));
         user.setHeaderUrl(headerUrl);
-        user.setCreateTime(LocalDateTime.now());
+        user.setCreateTime(new Date());
 
         this.insertUser(user);
 

@@ -19,7 +19,7 @@ public class User implements Serializable {
     private Integer status;
     private String activationCode;
     private String headerUrl;
-    private LocalDateTime createTime;
+    private Date createTime;
 
     public Integer getId() {
         return id;
@@ -93,11 +93,11 @@ public class User implements Serializable {
         this.headerUrl = headerUrl;
     }
 
-    public LocalDateTime getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 

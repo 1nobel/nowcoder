@@ -3,6 +3,7 @@ package com.fct.nowcoder.controller;
 
 import com.fct.nowcoder.annotation.LoginRequired;
 import com.fct.nowcoder.entity.User;
+import com.fct.nowcoder.service.LikeService;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.HostHolder;
 import com.fct.nowcoder.util.NowcoderUtil;
@@ -38,6 +39,9 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private LikeService likeService;
 
     @LoginRequired
     @GetMapping("/setting")
@@ -124,5 +128,23 @@ public class UserController {
             return "/site/setting";
         }
         return "redirect:/index";
+    }
+
+    //个人主页
+    @GetMapping("/profile/{userId}")
+    public String getProfilePage(@PathVariable("userId") int userId, Model model){
+        User user = userService.selectById(userId);
+        if(user == null){
+            throw new RuntimeException("该用户不存在");
+        }
+
+        // 用户
+        model.addAttribute("user", user);
+
+        // 点赞数量
+        int userLikeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount", userLikeCount);
+
+        return "/site/profile";
     }
 }

@@ -29,6 +29,19 @@ spring:
         smtp:
           ssl:
             enable: true
+# redis
+  redis:
+    database: 4
+    host: 124.221.91.15
+    port: 6379
+    password: com.abc.redis..
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
+
 
 
 
@@ -47,5 +60,6 @@ jasypt:
 
 #配置域名，当用户注册时可链接到网站
 nowcoder:
-  path: http://127.0.0.1:8010
+  path: http://localhost:8010
   upload: D:\\project/javaProject/images
+

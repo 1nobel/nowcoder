@@ -17,6 +17,11 @@ import org.jasypt.encryption.StringEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.BoundValueOperations;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.test.context.ContextConfiguration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -61,6 +66,9 @@ class NowcoderApplicationTests {
 
     @Resource
     private MessageMapper messageMapper;
+
+    @Resource
+    RedisTemplate redisTemplate;
 
     //测试帖子查询
     @Test
@@ -202,6 +210,49 @@ class NowcoderApplicationTests {
         ids.add(358);
         Integer integer = messageMapper.updateMessageStatus(ids, 1);
         log.info("{}",integer);
+    }
+
+
+    @Test
+    public void testRedis(){
+
+        String redisKey = "test:count";
+
+        //redisTemplate.opsForValue().set(redisKey,1);
+
+        log.info("{}",redisTemplate.opsForValue().get(redisKey));
+
+        //多次访问同一个key
+        BoundValueOperations operations = redisTemplate.boundValueOps(redisKey);
+        operations.increment();
+        operations.increment();
+        operations.increment();
+        operations.increment();
+
+        log.info("{}",operations.get());
+    }
+
+
+    // 编程式事务
+    @Test
+    public void testTransactional(){
+        Object obj = redisTemplate.execute(new SessionCallback() {
+            @Override
+            public Object execute(RedisOperations operations) throws DataAccessException {
+                String redisKey = "test:tx";
+
+                operations.multi();
+
+                operations.opsForSet().add(redisKey,"zhangsan");
+                operations.opsForSet().add(redisKey,"lisi");
+                operations.opsForSet().add(redisKey,"ww");
+
+                log.warn("{}",operations.opsForSet().members(redisKey));
+
+                return operations.exec();
+            }
+        });
+        log.warn("{}",obj);
     }
 
 }

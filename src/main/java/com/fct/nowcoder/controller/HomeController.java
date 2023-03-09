@@ -5,6 +5,7 @@ import com.fct.nowcoder.entity.DiscussPost;
 import com.fct.nowcoder.entity.Page;
 import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.DiscussPostService;
+import com.fct.nowcoder.service.LikeService;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.NowcoderUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -13,10 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.fct.nowcoder.util.CommunityConstant.ENTITY_TYPE_POST;
 
 @Slf4j
 @Controller
@@ -27,6 +31,9 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Resource
+    private LikeService likerService;
 
     //获取用户及帖子数据，跳转到主页面
     @RequestMapping(path = "/index", method = RequestMethod.GET)
@@ -46,7 +53,11 @@ public class HomeController {
 
             map.put("post",discussPost);
             map.put("user",user);
-            
+
+            //查询帖子点赞数量
+            long count = likerService.findEntityLikeCount(ENTITY_TYPE_POST,discussPost.getId());
+            map.put("likeCount",count );
+
             discussPosts.add(map);
         }
 
