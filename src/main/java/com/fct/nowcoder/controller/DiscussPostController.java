@@ -73,9 +73,12 @@ public class DiscussPostController {
      * 回复: 给评论的评论
      */
     @GetMapping("/get/{discussPostId}")
+
     public String getDetail(@PathVariable("discussPostId") Integer discussPostId, Model model, Page page){
 
         User loginUser = HostHolder.getUser();
+
+
 
         DiscussPost discussPost = discussPostService.getDiscussPost(discussPostId);
         User user = userService.selectById(Integer.parseInt(discussPost.getUserId()));
@@ -86,7 +89,7 @@ public class DiscussPostController {
         long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST,discussPostId);
         model.addAttribute("postLike", likeCount);
         //帖子的点赞状态
-        int postLikeStatus = likeService.findEntityLikeStatus(ENTITY_TYPE_POST, discussPostId, loginUser.getId());
+        int postLikeStatus = loginUser == null ? 0 : likeService.findEntityLikeStatus(ENTITY_TYPE_POST, discussPostId, loginUser.getId());
         model.addAttribute("postLikeStatus", postLikeStatus);
 
         // 评论的分页信息
@@ -110,8 +113,8 @@ public class DiscussPostController {
                 //赞
                 long count = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT,comment.getId());
                 commentVO.put("likeCount", count);
-                //帖子的点赞状态
-                int commentLikeStatus = likeService.findEntityLikeStatus(ENTITY_TYPE_COMMENT, comment.getId(), loginUser.getId());
+                //评论的点赞状态
+                int commentLikeStatus = loginUser == null? 0 : likeService.findEntityLikeStatus(ENTITY_TYPE_COMMENT, comment.getId(), loginUser.getId());
                 commentVO.put("commentLikeStatus", commentLikeStatus);
 
                 //回复列表
@@ -134,8 +137,8 @@ public class DiscussPostController {
                         //赞
                         long replyCount = likeService.findEntityLikeCount(ENTITY_TYPE_REPLY,reply.getId());
                         replyVo.put("replyCount", replyCount);
-                        //帖子的点赞状态
-                        int replyLikeStatus = likeService.findEntityLikeStatus(ENTITY_TYPE_REPLY, reply.getId(), loginUser.getId());
+                        //回复的点赞状态
+                        int replyLikeStatus = loginUser == null? 0 : likeService.findEntityLikeStatus(ENTITY_TYPE_REPLY, reply.getId(), loginUser.getId());
                         replyVo.put("replyLikeStatus", replyLikeStatus);
 
 

@@ -3,6 +3,7 @@ package com.fct.nowcoder.controller;
 
 import com.fct.nowcoder.annotation.LoginRequired;
 import com.fct.nowcoder.entity.User;
+import com.fct.nowcoder.service.FollowService;
 import com.fct.nowcoder.service.LikeService;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.HostHolder;
@@ -23,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Map;
 
+import static com.fct.nowcoder.util.CommunityConstant.ENTITY_TYPE_USER;
+
 @Slf4j
 @Controller
 @RequestMapping("/user")
@@ -42,6 +45,9 @@ public class UserController {
 
     @Resource
     private LikeService likeService;
+
+    @Resource
+    private FollowService followService;
 
     @LoginRequired
     @GetMapping("/setting")
@@ -144,6 +150,22 @@ public class UserController {
         // 点赞数量
         int userLikeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("likeCount", userLikeCount);
+
+        // 关注数量
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount", followeeCount);
+
+        // 粉丝
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount", followerCount);
+
+        // 是否已关注
+        boolean hasFollowed = false;
+        if(HostHolder.getUser() != null){
+            hasFollowed = followService.hasFollowed(HostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
+        }
+        model.addAttribute("hasFollowed", hasFollowed);
+
 
         return "/site/profile";
     }

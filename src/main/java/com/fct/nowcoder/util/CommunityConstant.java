@@ -44,4 +44,9 @@ public interface CommunityConstant {
      * 回复的赞
      */
     Integer ENTITY_TYPE_REPLY = 3;
+
+    /**
+     * 实体类型:用户
+     */
+    Integer ENTITY_TYPE_USER = 4;
 }

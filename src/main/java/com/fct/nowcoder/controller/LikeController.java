@@ -27,9 +27,13 @@ public class LikeController {
      */
     @PostMapping("/like")
     @ResponseBody
-    @LoginRequired
+//    @LoginRequired
     public String like(int entityType, int entityId, int entityUserId){
         User user = HostHolder.getUser();
+
+        if(user == null ){
+            return NowcoderUtil.getJsonString(1,"");
+        }
 
         //点赞
         likeService.like(user.getId(),entityType, entityId, entityUserId);
