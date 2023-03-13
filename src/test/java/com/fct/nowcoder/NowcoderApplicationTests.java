@@ -1,5 +1,6 @@
 package com.fct.nowcoder;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fct.nowcoder.dao.DiscussPostMapper;
 import com.fct.nowcoder.dao.LoginTicketMapper;
 import com.fct.nowcoder.dao.MessageMapper;
@@ -11,6 +12,8 @@ import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.DiscussPostService;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.MailClient;
+import com.fct.nowcoder.util.NowcoderUtil;
+import com.fct.nowcoder.util.RedisKeyUtil;
 import com.fct.nowcoder.util.SensitiveFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -218,18 +221,32 @@ class NowcoderApplicationTests {
 
         String redisKey = "test:count";
 
-        //redisTemplate.opsForValue().set(redisKey,1);
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(111);
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(LocalDateTime.now().plusMinutes(20));
+        loginTicket.setTicket(NowcoderUtil.generateUUID());
+        //loginTicketMapper.insertLoginTicket(loginTicket);
+
+        //TODO redis--生成登录凭证
+        redisKey = RedisKeyUtil.getLoginTicket(loginTicket.getTicket());
+        redisTemplate.opsForValue().set(redisKey, JSONObject.toJSON(loginTicket));
+
 
         log.info("{}",redisTemplate.opsForValue().get(redisKey));
 
+        JSONObject jb =  (JSONObject) redisTemplate.opsForValue().get(redisKey);
+        LoginTicket javaObject = jb.toJavaObject(LoginTicket.class);
+        log.info("{}",javaObject);
         //多次访问同一个key
+        /*
         BoundValueOperations operations = redisTemplate.boundValueOps(redisKey);
         operations.increment();
         operations.increment();
         operations.increment();
         operations.increment();
 
-        log.info("{}",operations.get());
+        log.info("{}",operations.get());*/
     }
 
 

@@ -40,6 +40,10 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
             }
         }
 
+        if(ticket == null){
+            return true;
+        }
+
         //3. 获取凭证并检查凭证是否有效
         LoginTicket loginTicket = userService.selectTicket(ticket);
         if(ticket != null && loginTicket.getStatus() == 0 && loginTicket.getExpired().isAfter(LocalDateTime.now()) ){

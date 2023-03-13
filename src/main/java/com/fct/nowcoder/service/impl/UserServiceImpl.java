@@ -1,6 +1,7 @@
 package com.fct.nowcoder.service.impl;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.fct.nowcoder.dao.LoginTicketMapper;
 import com.fct.nowcoder.dao.UserMapper;
 import com.fct.nowcoder.entity.LoginTicket;
@@ -8,10 +9,12 @@ import com.fct.nowcoder.entity.User;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.MailClient;
 import com.fct.nowcoder.util.NowcoderUtil;
+import com.fct.nowcoder.util.RedisKeyUtil;
 import com.fct.nowcoder.util.ValidateCodeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
@@ -24,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static com.fct.nowcoder.util.CommunityConstant.*;
 
@@ -51,13 +55,24 @@ public class UserServiceImpl implements UserService {
     @Value("${server.servlet.context-path}")
     private String proName;
 
-    @Autowired
-    private LoginTicketMapper loginTicketMapper;
+//    @Autowired
+//    private LoginTicketMapper loginTicketMapper;
 
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    private String userKey = null;
 
     @Override
     public User selectById(Integer userId) {
-        return userMapper.selectById(userId);
+        userKey = RedisKeyUtil.getUserKey(userId);
+        User user = (User)redisTemplate.opsForValue().get(userKey);
+        if(user != null){
+            return user;
+        }
+        user = userMapper.selectById(userId);
+        redisTemplate.opsForValue().set(userKey, user,3600,TimeUnit.SECONDS);
+        return user;
     }
 
     @Override
@@ -72,6 +87,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean insertUser(User user) {
+        userKey = RedisKeyUtil.getUserKey(user.getId());
+        redisTemplate.opsForValue().set(userKey, user,3600, TimeUnit.SECONDS);
         return userMapper.insertUser(user);
     }
 
@@ -171,7 +188,11 @@ public class UserServiceImpl implements UserService {
         // 激活成功
         if(user.getActivationCode().equals(code)){
             user.setStatus(1);
+
+            //删除redis
             userMapper.updateById(user);
+            userKey =  userKey = RedisKeyUtil.getUserKey(userId);
+            redisTemplate.delete(userKey);
             return ACTIVATION_SUCCESS;
         }
         // 激活失败
@@ -229,14 +250,24 @@ public class UserServiceImpl implements UserService {
          loginTicket.setStatus(0);
          loginTicket.setExpired(LocalDateTime.now().plusMinutes(expireTime));
          loginTicket.setTicket(coder.generateUUID());
-         loginTicketMapper.insertLoginTicket(loginTicket);
+         //loginTicketMapper.insertLoginTicket(loginTicket);
+
+         //TODO redis--生成登录凭证
+         String redisKey = RedisKeyUtil.getLoginTicket(loginTicket.getTicket());
+         redisTemplate.opsForValue().set(redisKey, JSONObject.toJSON(loginTicket));
 
          map.put("ticket",loginTicket.getTicket());
          return map;
      }
 
      public void logout(String ticket){
-         loginTicketMapper.updateTicket(ticket, 1);
+         //loginTicketMapper.updateTicket(ticket, 1);
+         //TODO redis--修改凭证状态
+         String redisKey = RedisKeyUtil.getLoginTicket(ticket);
+         JSONObject jb = (JSONObject) redisTemplate.opsForValue().get(redisKey);
+         LoginTicket loginTicket = jb.toJavaObject(LoginTicket.class);
+         loginTicket.setStatus(1);
+         redisTemplate.opsForValue().set(redisKey, JSONObject.toJSON(loginTicket));
      }
 
     /**
@@ -271,13 +302,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginTicket selectTicket(String ticket) {
-        return loginTicketMapper.selectTicket(ticket);
-
+//        return loginTicketMapper.selectTicket(ticket);
+        //TODO redis--查询登陆凭证
+        String redisKey = RedisKeyUtil.getLoginTicket(ticket);
+        JSONObject jb = (JSONObject) redisTemplate.opsForValue().get(redisKey);
+        return jb.toJavaObject(LoginTicket.class);
     }
 
     @Override
     public boolean updateById(User user) {
-        return userMapper.updateById(user);
+        boolean flag = userMapper.updateById(user);
+        userKey = RedisKeyUtil.getUserKey(user.getId());
+        redisTemplate.delete(userKey);
+
+        return flag;
     }
 
     /**
@@ -311,7 +349,10 @@ public class UserServiceImpl implements UserService {
         }
         NowcoderUtil nowcoderUtil = new NowcoderUtil();
         password =  nowcoderUtil.md5(password + user.getSalt());
+
         userMapper.updateByEmail(yourEmail,password);
+        userKey =  userKey = RedisKeyUtil.getUserKey(user.getId());
+        redisTemplate.delete(userKey);
 
         return map;
     }
@@ -347,6 +388,8 @@ public class UserServiceImpl implements UserService {
 
         newPassword =  nowcoderUtil.md5(newPassword + user.getSalt());
         userMapper.updateByEmail(user.getEmail(),newPassword);
+        userKey =  userKey = RedisKeyUtil.getUserKey(user.getId());
+        redisTemplate.delete(userKey);
 
         return map;
     }

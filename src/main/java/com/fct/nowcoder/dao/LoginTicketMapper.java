@@ -4,6 +4,7 @@ import com.fct.nowcoder.entity.LoginTicket;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
+@Deprecated
 public interface LoginTicketMapper {
     Integer insertLoginTicket(LoginTicket loginTicket);
 
