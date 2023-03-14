@@ -29,6 +29,13 @@ public class ServiceAspect {
     public void before(JoinPoint joinPoint){
         // 用户[1.2.3.4],在[某时刻],访问了[com.fct.nowcoder.service.xxx()]
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+
+        //消费者调用kafka不会有request
+        if (attributes == null){
+            return;
+        }
+
         HttpServletRequest request = attributes.getRequest();
         //ip
         String ip = request.getRemoteHost();

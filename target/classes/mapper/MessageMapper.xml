@@ -79,5 +79,49 @@
         </if>
     </select>
 
+    <select id="selectMessage" resultMap="MessageType">
+        SELECT *
+        FROM message
+        WHERE id in(
+                SELECT MAX(id) 'id'
+                FROM message
+                WHERE status != 2
+                AND to_id = #{userId}
+                AND from_id = 1
+                AND conversation_id = #{topic}
+            );
+    </select>
+
+    <select id="selectNoticeCount" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        FROM message
+        WHERE status != 2
+        AND to_id = #{userId}
+        AND from_id = 1
+        AND conversation_id = #{topic}
+    </select>
+
+    <select id="selectNoticeUnreadCount" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        FROM message
+        WHERE status = 0
+        AND to_id = #{userId}
+        AND from_id = 1
+        <if test="topic!=null">
+            AND conversation_id = #{topic};
+        </if>
+    </select>
+
+    <select id="selectNotices" resultMap="MessageType">
+        SELECT *
+        FROM message
+        WHERE status != 2
+        AND to_id = #{userId}
+        AND from_id = 1
+        AND conversation_id = #{topic}
+        ORDER BY create_time desc
+        LIMIT #{offset}, #{limit}
+    </select>
+
 
 </mapper>

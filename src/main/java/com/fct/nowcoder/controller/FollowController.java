@@ -1,7 +1,9 @@
 package com.fct.nowcoder.controller;
 
+import com.fct.nowcoder.entity.Event;
 import com.fct.nowcoder.entity.Page;
 import com.fct.nowcoder.entity.User;
+import com.fct.nowcoder.event.EventProducer;
 import com.fct.nowcoder.service.FollowService;
 import com.fct.nowcoder.service.UserService;
 import com.fct.nowcoder.util.HostHolder;
@@ -19,7 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 import static com.fct.nowcoder.util.CommunityConstant.ENTITY_TYPE_USER;
+import static com.fct.nowcoder.util.CommunityConstant.TOPIC_FOLLOW;
 
+/**
+ * 关注
+ */
 @Controller
 public class FollowController {
 
@@ -29,6 +35,9 @@ public class FollowController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private EventProducer eventProducer;
+
     //关注
     @PostMapping("/follow")
     @ResponseBody
@@ -36,6 +45,16 @@ public class FollowController {
         User user = HostHolder.getUser();
 
         followService.follow(user.getId(), entityType, entityId);
+
+        //触发关注事件
+        Event event = new Event()
+                .setTopic(TOPIC_FOLLOW)
+                .setUserID(user.getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
+
 
         return NowcoderUtil.getJsonString(0, "已关注");
     }

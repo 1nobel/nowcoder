@@ -25,4 +25,16 @@ public interface MessageService {
 
     // 修改私信状态
     Integer updateStatusMessage(List<Integer> ids, Integer status);
+
+    //查询最新通知
+    Message findLatestNotice(int userId, String topic);
+
+    //查询通知数量
+    int findNoticeCount(int userId, String topic);
+
+    //查询未读通知数量
+    int findNoticeUnreadCount(int userId, String topic);
+
+    //查询消息列表
+    List<Message> findNotices(int userId, String topic, int offset, int limit);
 }

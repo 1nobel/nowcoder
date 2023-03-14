@@ -135,10 +135,10 @@ public class DiscussPostController {
                         replyVo.put("target", target);
 
                         //赞
-                        long replyCount = likeService.findEntityLikeCount(ENTITY_TYPE_REPLY,reply.getId());
+                        long replyCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT,reply.getId());
                         replyVo.put("replyCount", replyCount);
                         //回复的点赞状态
-                        int replyLikeStatus = loginUser == null? 0 : likeService.findEntityLikeStatus(ENTITY_TYPE_REPLY, reply.getId(), loginUser.getId());
+                        int replyLikeStatus = loginUser == null? 0 : likeService.findEntityLikeStatus(ENTITY_TYPE_COMMENT, reply.getId(), loginUser.getId());
                         replyVo.put("replyLikeStatus", replyLikeStatus);
 
 

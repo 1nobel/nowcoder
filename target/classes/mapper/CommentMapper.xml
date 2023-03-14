@@ -30,4 +30,10 @@
         AND entity_type = #{entityType}
         AND entity_id = #{entityId};
     </select>
+
+    <select id="selectCommentById" resultMap="CommentType">
+        SELECT *
+        FROM comment
+        WHERE id = #{id};
+    </select>
 </mapper>

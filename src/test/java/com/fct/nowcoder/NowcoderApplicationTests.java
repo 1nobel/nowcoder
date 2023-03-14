@@ -230,6 +230,7 @@ class NowcoderApplicationTests {
 
         //TODO redis--生成登录凭证
         redisKey = RedisKeyUtil.getLoginTicket(loginTicket.getTicket());
+        log.warn("{}",JSONObject.toJSON(loginTicket));
         redisTemplate.opsForValue().set(redisKey, JSONObject.toJSON(loginTicket));
 
 

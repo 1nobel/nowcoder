@@ -43,10 +43,30 @@ public interface CommunityConstant {
     /**
      * 回复的赞
      */
-    Integer ENTITY_TYPE_REPLY = 3;
+//    Integer ENTITY_TYPE_REPLY = 3;
 
     /**
      * 实体类型:用户
      */
     Integer ENTITY_TYPE_USER = 4;
+
+    /**
+     * 主题: 评论
+     */
+    String TOPIC_COMMENT = "comment";
+
+    /**
+     * 主题: 点赞
+     */
+    String TOPIC_LIKE = "like";
+
+    /**
+     * 主题: 关注
+     */
+    String TOPIC_FOLLOW = "follow";
+
+    /**
+     * 系统用户id
+     */
+    Integer SYSTEM_USER_ID = 1;
 }

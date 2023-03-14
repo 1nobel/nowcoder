@@ -47,6 +47,9 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Integer insertMessage(Message message) {
 
+        if(message.getFromId() == 1){
+            return messageMapper.addMessage(message);
+        }
         //敏感词过滤
         message.setContent(HtmlUtils.htmlEscape(message.getContent()));
         message.setContent(sensitiveFilter.filter(message.getContent()));
@@ -57,5 +60,25 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Integer updateStatusMessage(List<Integer> ids, Integer status) {
         return messageMapper.updateMessageStatus(ids, status);
+    }
+
+    @Override
+    public Message findLatestNotice(int userId, String topic) {
+        return messageMapper.selectMessage(userId, topic);
+    }
+
+    @Override
+    public int findNoticeCount(int userId, String topic) {
+        return messageMapper.selectNoticeCount(userId, topic);
+    }
+
+    @Override
+    public int findNoticeUnreadCount(int userId, String topic) {
+        return messageMapper.selectNoticeUnreadCount(userId, topic);
+    }
+
+    @Override
+    public List<Message> findNotices(int userId, String topic, int offset, int limit) {
+        return messageMapper.selectNotices(userId, topic, offset, limit);
     }
 }
